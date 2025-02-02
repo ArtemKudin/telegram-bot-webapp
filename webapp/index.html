@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мини-приложение</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <h1>Выберите категорию</h1>
+        <button class="category-btn" data-action="service_waste">Услуга вывоза 🚛</button>
+        <button class="category-btn" data-action="service_sale">Продажа 💰</button>
+        <button class="category-btn" data-action="service_rent">Аренда 🏠</button>
+
+        <div id="volume-selection" style="display: none;">
+            <h2>Выберите объем контейнера</h2>
+            <div id="volumes"></div>
+        </div>
+
+        <div id="confirmation" style="display: none;">
+            <h2>Подтвердите заявку</h2>
+            <p id="selected-volume"></p>
+            <button id="confirm-btn">Подтвердить ✅</button>
+            <button id="back-btn">Назад ◀️</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
