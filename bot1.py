@@ -4,6 +4,7 @@ from aiogram.filters import Command
 from dotenv import load_dotenv
 import os
 import asyncio
+from database import init_db, save_order, get_user_orders
 
 # Загрузка переменных окружения
 load_dotenv()
@@ -12,6 +13,9 @@ API_TOKEN = os.getenv("API_TOKEN")
 # Инициализация бота
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
+
+# Инициализация базы данных
+init_db()
 
 # Команда /start
 @dp.message(Command("start"))
@@ -33,36 +37,37 @@ async def order_pickup(message):
 # Команда /myorders
 @dp.message(Command("myorders"))
 async def my_orders(message):
-    # Проверка наличия заказов (в данном случае просто заглушка)
-    orders = []  # Здесь можно добавить логику для получения реальных заказов
+    user_id = message.from_user.id
+    orders = get_user_orders(user_id)
     if not orders:
-        await message.answer(
-            "У вас пока нет оплаченных заказов. Вы можете сделать заказ через мини-приложение."
-        )
-    else:
-        # Если есть заказы, отправляем их список
-        await message.answer("Ваши заказы:\n" + "\n".join(orders))
+        await message.answer("У вас пока нет зарегистрированных заявок.")
+        return
 
-# Команда /info
-@dp.message(Command("info"))
-async def info_help(message):
-    # Сообщение с информацией
-    message_text = (
-        "Уважаемый клиент,\n\n"
-        "Наша компания успешно работает на рынке более 15 лет. За это время мы накопили глубокое понимание всех аспектов взаимодействия между заказчиком и исполнителем.\n\n"
-        "В целях обеспечения высокого качества обслуживания мы создали круглосуточную службу поддержки, к которой вы можете обратиться в любое время суток. Также вы можете направлять нам свои замечания и предложения по улучшению нашей работы.\n\n"
-        "Мы всегда открыты к диалогу и заинтересованы в долгосрочном сотрудничестве.\n\n"
-        "С уважением,\nEcoService\n\n"
-        "P.S. Контактные данные службы поддержки:"
-    )
-    # Кликабельная ссылка на контакт поддержки
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="@ngKANEKI", url="https://t.me/ngKANEKI")]
-    ])
-    await message.answer(
-        message_text,
-        reply_markup=keyboard
-    )
+    response = "Ваши заявки:\n\n"
+    for idx, (service, volume, price, payment_link) in enumerate(orders, start=1):
+        response += f"{idx}. Услуга: {service}, Объём: {volume} м³, Стоимость: {price}\n"
+        response += f"Для оплаты перейдите по ссылке: {payment_link}\n\n"
+
+    await message.answer(response)
+
+# Обработка данных из мини-приложения
+@dp.message(F.web_app_data)
+async def handle_web_app_data(message):
+    data = message.web_app_data.data
+    try:
+        data_dict = eval(data)  # Преобразуем строку в словарь
+        user_id = message.from_user.id
+        service = data_dict.get("action")
+        volume = data_dict.get("volume")
+        price = data_dict.get("price")
+
+        # Сохраняем заявку в базу данных
+        save_order(user_id, service, volume, price)
+
+        # Отправляем подтверждение пользователю
+        await message.answer("Ваша заявка зарегистрирована. Для уточнений обращайтесь к менеджеру @ngKANEKI")
+    except Exception as e:
+        await message.answer("Произошла ошибка при обработке заявки. Попробуйте снова.")
 
 # Запуск бота
 async def main():
