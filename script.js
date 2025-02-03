@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Проверяем, что мини-приложение запущено в Telegram
-    if (!window.Telegram || !window.Telegram.WebApp) {
-        alert("Это мини-приложение должно запускаться только через Telegram!");
-        return;
+    const isTelegram = window.Telegram && window.Telegram.WebApp;
+    if (!isTelegram) {
+        console.warn("Это мини-приложение должно запускаться только через Telegram!");
+        // Продолжаем загрузку, чтобы тестировать в браузере
     }
 
     const serviceInfo = document.getElementById("service-info");
@@ -65,8 +66,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Подтвердить заявку
     confirmBtn.addEventListener("click", () => {
         if (selectedData) {
-            Telegram.WebApp.sendData(JSON.stringify(selectedData));
-            Telegram.WebApp.close();
+            if (isTelegram) {
+                Telegram.WebApp.sendData(JSON.stringify(selectedData));
+                Telegram.WebApp.close();
+            } else {
+                alert("Данные отправлены: " + JSON.stringify(selectedData));
+            }
         } else {
             alert("Пожалуйста, выберите объём перед подтверждением.");
         }
