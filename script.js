@@ -75,9 +75,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
+            console.log("Отправляемые данные:", selectedData);
+
             // Отправляем данные в бот
             Telegram.WebApp.sendData(JSON.stringify(selectedData));
         } catch (error) {
+            console.error("Ошибка при отправке данных:", error);
             alert("Произошла ошибка при отправке данных. Попробуйте снова.");
         }
     });

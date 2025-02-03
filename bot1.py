@@ -55,6 +55,9 @@ async def my_orders(message):
 @dp.message(F.web_app_data)
 async def handle_web_app_data(message):
     try:
+        # Логируем полученные данные
+        print(f"Полученные данные: {message.web_app_data.data}")
+
         # Преобразуем JSON-строку в словарь
         data_dict = json.loads(message.web_app_data.data)
         user_id = message.from_user.id
@@ -73,7 +76,8 @@ async def handle_web_app_data(message):
         # Отправляем подтверждение пользователю
         await message.answer("Ваша заявка зарегистрирована. Для оплаты перейдите по ссылке:")
     except Exception as e:
-        await message.answer(f"Произошла ошибка при обработке заявки: {str(e)}")
+        print(f"Ошибка при обработке данных: {str(e)}")
+        await message.answer("Произошла ошибка при обработке заявки. Попробуйте снова.")
 
 # Запуск бота
 async def main():
