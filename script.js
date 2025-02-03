@@ -1,15 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Проверяем, что мини-приложение запущено в Telegram
-    const isTelegram = window.Telegram && window.Telegram.WebApp;
-    if (!isTelegram) {
-        console.warn("Это мини-приложение должно запускаться только через Telegram!");
-        // Продолжаем загрузку, чтобы тестировать в браузере
-    }
-
-    const serviceInfo = document.getElementById("service-info");
+    const volumeSelection = document.getElementById("volume-selection");
+    const confirmation = document.getElementById("confirmation");
     const serviceTitle = document.getElementById("service-title");
     const volumesDiv = document.getElementById("volumes");
+    const selectedVolume = document.getElementById("selected-volume");
     const confirmBtn = document.getElementById("confirm-btn");
+    const backBtn = document.getElementById("back-btn");
+
+    let currentAction = null;
     let selectedData = null;
 
     // Цены для каждой категории
@@ -40,40 +38,48 @@ document.addEventListener("DOMContentLoaded", () => {
     // Обработка нажатия на кнопки услуг
     document.querySelectorAll(".service-btn").forEach(button => {
         button.addEventListener("click", () => {
-            const action = button.dataset.action;
+            currentAction = button.dataset.action;
             serviceTitle.textContent = button.textContent;
-            showVolumes(action);
-            serviceInfo.style.display = "block";
-            confirmBtn.disabled = true; // Отключаем кнопку "Подтвердить" до выбора объёма
+            showVolumes(currentAction);
+            volumeSelection.style.display = "block";
+            confirmation.style.display = "none";
         });
     });
 
     // Показать объёмы для выбранной услуги
     function showVolumes(action) {
-        volumesDiv.innerHTML = ""; // Очищаем предыдущие кнопки
+        volumesDiv.innerHTML = "";
         Object.keys(prices[action]).forEach(volume => {
             const button = document.createElement("button");
             button.textContent = `${volume} м³ - ${prices[action][volume]}`;
             button.onclick = () => {
                 selectedData = { action, volume, price: prices[action][volume] };
-                confirmBtn.disabled = false; // Включаем кнопку "Подтвердить"
-                alert(`Выбрано: ${volume} м³ за ${prices[action][volume]}`);
+                showConfirmation();
             };
             volumesDiv.appendChild(button);
         });
     }
 
+    // Показать подтверждение
+    function showConfirmation() {
+        selectedVolume.textContent = `Объем: ${selectedData.volume} м³\nСтоимость: ${selectedData.price}`;
+        volumeSelection.style.display = "none";
+        confirmation.style.display = "block";
+    }
+
     // Подтвердить заявку
     confirmBtn.addEventListener("click", () => {
-        if (selectedData) {
-            if (isTelegram) {
-                Telegram.WebApp.sendData(JSON.stringify(selectedData));
-                Telegram.WebApp.close();
-            } else {
-                alert("Данные отправлены: " + JSON.stringify(selectedData));
-            }
+        if (window.Telegram && window.Telegram.WebApp) {
+            Telegram.WebApp.sendData(JSON.stringify(selectedData));
+            Telegram.WebApp.close();
         } else {
-            alert("Пожалуйста, выберите объём перед подтверждением.");
+            alert("Ваша заявка зарегистрирована. Для уточнений обращайтесь к менеджеру @ngKANEKI");
         }
+    });
+
+    // Вернуться назад
+    backBtn.addEventListener("click", () => {
+        confirmation.style.display = "none";
+        volumeSelection.style.display = "block";
     });
 });
