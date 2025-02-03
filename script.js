@@ -1,11 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const mainPage = document.getElementById("main-page");
     const volumeSelection = document.getElementById("volume-selection");
     const confirmation = document.getElementById("confirmation");
+    const myOrdersPage = document.getElementById("my-orders");
+    const ordersList = document.getElementById("orders-list");
+
     const serviceTitle = document.getElementById("service-title");
     const volumesDiv = document.getElementById("volumes");
     const selectedVolume = document.getElementById("selected-volume");
+
     const confirmBtn = document.getElementById("confirm-btn");
-    const backBtn = document.getElementById("back-btn");
+    const backToMainBtn = document.getElementById("back-to-main-btn");
+    const backToVolumesBtn = document.getElementById("back-to-volumes-btn");
+    const backToMainFromOrdersBtn = document.getElementById("back-to-main-from-orders-btn");
+    const myOrdersBtn = document.getElementById("my-orders-btn");
 
     let currentAction = null;
     let selectedData = null;
@@ -35,6 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    // Показать главную страницу
+    function showMainPage() {
+        mainPage.style.display = "block";
+        volumeSelection.style.display = "none";
+        confirmation.style.display = "none";
+        myOrdersPage.style.display = "none";
+    }
+
     // Обработка нажатия на кнопки услуг
     document.querySelectorAll(".service-btn").forEach(button => {
         button.addEventListener("click", () => {
@@ -42,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
             serviceTitle.textContent = button.textContent;
             showVolumes(currentAction);
             volumeSelection.style.display = "block";
-            confirmation.style.display = "none";
+            mainPage.style.display = "none";
         });
     });
 
@@ -85,9 +101,44 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Вернуться назад
-    backBtn.addEventListener("click", () => {
+    // Вернуться назад из выбора объёма
+    backToMainBtn.addEventListener("click", () => {
+        showMainPage();
+    });
+
+    // Вернуться назад из подтверждения
+    backToVolumesBtn.addEventListener("click", () => {
         confirmation.style.display = "none";
         volumeSelection.style.display = "block";
     });
+
+    // Показать мои заказы
+    myOrdersBtn.addEventListener("click", async () => {
+        try {
+            const response = await fetch("/get-orders"); // Запрос к серверу для получения заказов
+            const orders = await response.json();
+
+            if (orders.length === 0) {
+                ordersList.textContent = "У вас пока нет заказов.";
+            } else {
+                ordersList.textContent = orders
+                    .map((order, idx) => `${idx + 1}. Услуга: ${order.service}, Объём: ${order.volume} м³, Стоимость: ${order.price}`)
+                    .join("\n\n");
+            }
+
+            mainPage.style.display = "none";
+            myOrdersPage.style.display = "block";
+        } catch (error) {
+            console.error("Ошибка при загрузке заказов:", error);
+            ordersList.textContent = "Не удалось загрузить заказы.";
+        }
+    });
+
+    // Вернуться назад из моих заказов
+    backToMainFromOrdersBtn.addEventListener("click", () => {
+        showMainPage();
+    });
+
+    // Инициализация
+    showMainPage();
 });

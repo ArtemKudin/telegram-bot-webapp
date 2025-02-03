@@ -8,16 +8,20 @@
 </head>
 <body>
     <div id="app">
-        <!-- Выбор услуги -->
-        <h1>Выберите услугу:</h1>
-        <button class="service-btn" data-action="service_waste">Вывоз мусора</button>
-        <button class="service-btn" data-action="service_sale">Продажа контейнеров</button>
-        <button class="service-btn" data-action="service_rent">Аренда контейнеров</button>
+        <!-- Главная страница -->
+        <div id="main-page">
+            <h1>Выберите услугу:</h1>
+            <button class="service-btn" data-action="service_waste">Вывоз мусора</button>
+            <button class="service-btn" data-action="service_sale">Продажа контейнеров</button>
+            <button class="service-btn" data-action="service_rent">Аренда контейнеров</button>
+            <button id="my-orders-btn">Мои заказы</button>
+        </div>
 
         <!-- Выбор объёма -->
         <div id="volume-selection" style="display: none;">
             <h2 id="service-title"></h2>
             <div id="volumes"></div>
+            <button id="back-to-main-btn">Назад</button>
         </div>
 
         <!-- Подтверждение -->
@@ -25,7 +29,14 @@
             <h2>Подтвердите заказ:</h2>
             <pre id="selected-volume"></pre>
             <button id="confirm-btn">Подтвердить</button>
-            <button id="back-btn">Назад</button>
+            <button id="back-to-volumes-btn">Назад</button>
+        </div>
+
+        <!-- Мои заказы -->
+        <div id="my-orders" style="display: none;">
+            <h2>Мои заказы:</h2>
+            <pre id="orders-list">Загрузка...</pre>
+            <button id="back-to-main-from-orders-btn">Назад</button>
         </div>
     </div>
 
