@@ -74,15 +74,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        if (window.Telegram && window.Telegram.WebApp) {
-            try {
-                Telegram.WebApp.sendData(JSON.stringify(selectedData));
-                Telegram.WebApp.close();
-            } catch (error) {
-                alert(`Ошибка при отправке данных: ${error.message}`);
-            }
-        } else {
-            alert("Это мини-приложение должно запускаться только через Telegram!");
+        try {
+            // Отправляем данные в бот
+            Telegram.WebApp.sendData(JSON.stringify(selectedData));
+            Telegram.WebApp.close();
+        } catch (error) {
+            alert("Заявка отправлена, но произошла ошибка при закрытии мини-приложения.");
         }
     });
 

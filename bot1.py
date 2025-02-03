@@ -71,7 +71,7 @@ async def handle_web_app_data(message):
         save_order(user_id, service, volume, price)
 
         # Отправляем подтверждение пользователю
-        await message.answer("Ваша заявка зарегистрирована. Для уточнений обращайтесь к менеджеру @ngKANEKI")
+        await message.answer("Ваша заявка зарегистрирована. Для оплаты перейдите по ссылке:")
     except Exception as e:
         await message.answer(f"Произошла ошибка при обработке заявки: {str(e)}")
 
