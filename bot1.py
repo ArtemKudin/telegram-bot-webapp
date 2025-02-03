@@ -1,8 +1,9 @@
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, F
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-from aiogram.utils import executor
+from aiogram.filters import Command
 from dotenv import load_dotenv
 import os
+import asyncio
 
 # Загрузка переменных окружения
 load_dotenv()
@@ -10,23 +11,22 @@ API_TOKEN = os.getenv("API_TOKEN")
 
 # Инициализация бота
 bot = Bot(token=API_TOKEN)
-dp = Dispatcher(bot)
+dp = Dispatcher()
 
 # Команда /start
-@dp.message_handler(commands=["start"])
-async def send_welcome(message: types.Message):
+@dp.message(Command("start"))
+async def send_welcome(message):
     # Создание кнопок меню
-    keyboard = InlineKeyboardMarkup(row_width=1)
-    keyboard.add(
-        InlineKeyboardButton("📦 Заказать вывоз", callback_data="order_pickup"),
-        InlineKeyboardButton("📋 Мои заказы", callback_data="my_orders"),
-        InlineKeyboardButton("ℹ️ Информация и помощь", callback_data="info_help")
-    )
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="📦 Заказать вывоз", callback_data="order_pickup")],
+        [InlineKeyboardButton(text="📋 Мои заказы", callback_data="my_orders")],
+        [InlineKeyboardButton(text="ℹ️ Информация и помощь", callback_data="info_help")]
+    ])
     await message.answer("Выберите действие:", reply_markup=keyboard)
 
 # Обработчик для кнопки "Заказать вывоз"
-@dp.callback_query_handler(lambda c: c.data == "order_pickup")
-async def order_pickup(callback_query: types.CallbackQuery):
+@dp.callback_query(F.data == "order_pickup")
+async def order_pickup(callback_query):
     # Кнопка для запуска мини-приложения
     web_app_keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="Открыть мини-приложение", web_app=WebAppInfo(url="https://artemkudin.github.io/telegram-bot-webapp/"))]
@@ -38,8 +38,8 @@ async def order_pickup(callback_query: types.CallbackQuery):
     )
 
 # Обработчик для кнопки "Мои заказы"
-@dp.callback_query_handler(lambda c: c.data == "my_orders")
-async def my_orders(callback_query: types.CallbackQuery):
+@dp.callback_query(F.data == "my_orders")
+async def my_orders(callback_query):
     # Проверка наличия заказов (в данном случае просто заглушка)
     orders = []  # Здесь можно добавить логику для получения реальных заказов
     if not orders:
@@ -52,8 +52,8 @@ async def my_orders(callback_query: types.CallbackQuery):
         await bot.send_message(callback_query.from_user.id, "Ваши заказы:\n" + "\n".join(orders))
 
 # Обработчик для кнопки "Информация и помощь"
-@dp.callback_query_handler(lambda c: c.data == "info_help")
-async def info_help(callback_query: types.CallbackQuery):
+@dp.callback_query(F.data == "info_help")
+async def info_help(callback_query):
     # Сообщение с информацией
     message_text = (
         "Уважаемый клиент,\n\n"
@@ -74,5 +74,8 @@ async def info_help(callback_query: types.CallbackQuery):
     )
 
 # Запуск бота
+async def main():
+    await dp.start_polling(bot)
+
 if __name__ == "__main__":
-    executor.start_polling(dp, skip_updates=True)
+    asyncio.run(main())
