@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const app = document.getElementById("app");
-    const volumeSelection = document.getElementById("volume-selection");
-    const confirmation = document.getElementById("confirmation");
-    const selectedVolume = document.getElementById("selected-volume");
-    let currentAction = null;
+    const serviceInfo = document.getElementById("service-info");
+    const serviceTitle = document.getElementById("service-title");
+    const volumesDiv = document.getElementById("volumes");
     let selectedData = null;
 
     // Цены для каждой категории
@@ -31,51 +29,36 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Обработка нажатия на кнопки категорий
-    document.querySelectorAll(".category-btn").forEach(button => {
+    // Обработка нажатия на кнопки услуг
+    document.querySelectorAll(".service-btn").forEach(button => {
         button.addEventListener("click", () => {
-            currentAction = button.dataset.action;
-            showVolumeSelection(currentAction);
+            const action = button.dataset.action;
+            serviceTitle.textContent = button.textContent;
+            showVolumes(action);
+            serviceInfo.style.display = "block";
         });
     });
 
-    // Показать выбор объёма
-    function showVolumeSelection(action) {
-        const volumesDiv = document.getElementById("volumes");
+    // Показать объёмы для выбранной услуги
+    function showVolumes(action) {
         volumesDiv.innerHTML = "";
         Object.keys(prices[action]).forEach(volume => {
             const button = document.createElement("button");
             button.textContent = `${volume} м³ - ${prices[action][volume]}`;
             button.addEventListener("click", () => {
                 selectedData = { action, volume, price: prices[action][volume] };
-                showConfirmation();
             });
             volumesDiv.appendChild(button);
         });
-        volumeSelection.style.display = "block";
-        confirmation.style.display = "none";
-    }
-
-    // Показать подтверждение
-    function showConfirmation() {
-        selectedVolume.textContent = `Объем: ${selectedData.volume} м³\nСтоимость: ${selectedData.price}`;
-        volumeSelection.style.display = "none";
-        confirmation.style.display = "block";
     }
 
     // Подтвердить заявку
     document.getElementById("confirm-btn").addEventListener("click", () => {
-        if (window.Telegram && window.Telegram.WebApp) {
+        if (selectedData && window.Telegram && window.Telegram.WebApp) {
             Telegram.WebApp.sendData(JSON.stringify(selectedData));
             Telegram.WebApp.close();
         } else {
-            console.error("Telegram WebApp API не доступен.");
+            alert("Пожалуйста, выберите объём перед подтверждением.");
         }
-    });
-
-    // Вернуться назад
-    document.getElementById("back-btn").addEventListener("click", () => {
-        confirmation.style.display = "none";
-        volumeSelection.style.display = "block";
     });
 });

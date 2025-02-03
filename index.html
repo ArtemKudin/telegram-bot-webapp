@@ -8,26 +8,17 @@
 </head>
 <body>
     <div id="app">
-        <!-- Выбор категории -->
-        <div id="categories">
-            <h1>Выберите услугу:</h1>
-            <button class="category-btn" data-action="service_waste">Вывоз мусора</button>
-            <button class="category-btn" data-action="service_sale">Продажа контейнеров</button>
-            <button class="category-btn" data-action="service_rent">Аренда контейнеров</button>
-        </div>
+        <!-- Выбор услуги -->
+        <h1>Выберите услугу:</h1>
+        <button class="service-btn" data-action="service_waste">Вывоз мусора</button>
+        <button class="service-btn" data-action="service_sale">Продажа контейнеров</button>
+        <button class="service-btn" data-action="service_rent">Аренда контейнеров</button>
 
-        <!-- Выбор объёма -->
-        <div id="volume-selection" style="display: none;">
-            <h2>Выберите объём контейнера:</h2>
+        <!-- Информация о выбранной услуге -->
+        <div id="service-info" style="display: none;">
+            <h2 id="service-title"></h2>
             <div id="volumes"></div>
-        </div>
-
-        <!-- Подтверждение -->
-        <div id="confirmation" style="display: none;">
-            <h2>Подтвердите заказ:</h2>
-            <pre id="selected-volume"></pre>
             <button id="confirm-btn">Подтвердить</button>
-            <button id="back-btn">Назад</button>
         </div>
     </div>
 
