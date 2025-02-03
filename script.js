@@ -113,25 +113,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Показать мои заказы
-    myOrdersBtn.addEventListener("click", async () => {
-        try {
-            const response = await fetch("/get-orders"); // Запрос к серверу для получения заказов
-            const orders = await response.json();
-
-            if (orders.length === 0) {
-                ordersList.textContent = "У вас пока нет заказов.";
-            } else {
-                ordersList.textContent = orders
-                    .map((order, idx) => `${idx + 1}. Услуга: ${order.service}, Объём: ${order.volume} м³, Стоимость: ${order.price}`)
-                    .join("\n\n");
-            }
-
-            mainPage.style.display = "none";
-            myOrdersPage.style.display = "block";
-        } catch (error) {
-            console.error("Ошибка при загрузке заказов:", error);
-            ordersList.textContent = "Не удалось загрузить заказы.";
-        }
+    myOrdersBtn.addEventListener("click", () => {
+        // Выводим сообщение о том, что функционал временно недоступен
+        alert("Эта функция временно недоступна. Попробуйте позже.");
     });
 
     // Вернуться назад из моих заказов
