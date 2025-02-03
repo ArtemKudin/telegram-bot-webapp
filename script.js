@@ -114,8 +114,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Показать мои заказы
     myOrdersBtn.addEventListener("click", () => {
-        // Выводим сообщение о том, что функционал временно недоступен
-        alert("Эта функция временно недоступна. Попробуйте позже.");
+        try {
+            // Отправляем запрос на получение заказов
+            Telegram.WebApp.sendData(JSON.stringify({ action: "get_orders" }));
+        } catch (error) {
+            console.error("Ошибка при отправке запроса:", error);
+            alert("Произошла ошибка при загрузке заказов. Попробуйте снова.");
+        }
     });
 
     // Вернуться назад из моих заказов

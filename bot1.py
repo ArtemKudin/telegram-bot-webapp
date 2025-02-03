@@ -66,6 +66,23 @@ async def handle_web_app_data(message):
         # Преобразуем JSON-строку в словарь
         data_dict = json.loads(message.web_app_data.data)
         user_id = message.from_user.id
+
+        # Если запрос на получение заказов
+        if data_dict.get("action") == "get_orders":
+            orders = get_user_orders(user_id)
+            if not orders:
+                await message.answer("У вас пока нет заказов.")
+                return
+
+            # Отправляем заказы в формате JSON
+            orders_list = [
+                {"service": service, "volume": volume, "price": price}
+                for service, volume, price, _ in orders
+            ]
+            await message.answer(json.dumps(orders_list))
+            return
+
+        # Если запрос на сохранение новой заявки
         service = data_dict.get("action")
         volume = data_dict.get("volume")
         price = data_dict.get("price")
