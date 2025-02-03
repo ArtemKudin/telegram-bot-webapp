@@ -77,9 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             // Отправляем данные в бот
             Telegram.WebApp.sendData(JSON.stringify(selectedData));
-            Telegram.WebApp.close();
         } catch (error) {
-            alert("Заявка отправлена, но произошла ошибка при закрытии мини-приложения.");
+            alert("Произошла ошибка при отправке данных. Попробуйте снова.");
         }
     });
 
