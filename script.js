@@ -69,11 +69,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Подтвердить заявку
     confirmBtn.addEventListener("click", () => {
-        if (selectedData) {
-            Telegram.WebApp.sendData(JSON.stringify(selectedData));
-            Telegram.WebApp.close();
-        } else {
+        if (!selectedData) {
             alert("Пожалуйста, выберите объём перед подтверждением.");
+            return;
+        }
+
+        if (window.Telegram && window.Telegram.WebApp) {
+            try {
+                Telegram.WebApp.sendData(JSON.stringify(selectedData));
+                Telegram.WebApp.close();
+            } catch (error) {
+                alert(`Ошибка при отправке данных: ${error.message}`);
+            }
+        } else {
+            alert("Это мини-приложение должно запускаться только через Telegram!");
         }
     });
 
