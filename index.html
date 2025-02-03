@@ -7,23 +7,28 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Выберите категорию и объём</h1>
-
+    <div id="app">
         <!-- Выбор категории -->
-        <label for="category">Категория:</label>
-        <select id="category">
-            <option value="food">Еда</option>
-            <option value="electronics">Электроника</option>
-            <option value="clothes">Одежда</option>
-        </select>
+        <div id="categories">
+            <h1>Выберите услугу:</h1>
+            <button class="category-btn" data-action="service_waste">Вывоз мусора</button>
+            <button class="category-btn" data-action="service_sale">Продажа контейнеров</button>
+            <button class="category-btn" data-action="service_rent">Аренда контейнеров</button>
+        </div>
 
         <!-- Выбор объёма -->
-        <label for="volume">Объём:</label>
-        <input type="number" id="volume" placeholder="Введите объём">
+        <div id="volume-selection" style="display: none;">
+            <h2>Выберите объём контейнера:</h2>
+            <div id="volumes"></div>
+        </div>
 
-        <!-- Кнопка подтверждения -->
-        <button id="confirmButton">Подтвердить</button>
+        <!-- Подтверждение -->
+        <div id="confirmation" style="display: none;">
+            <h2>Подтвердите заказ:</h2>
+            <pre id="selected-volume"></pre>
+            <button id="confirm-btn">Подтвердить</button>
+            <button id="back-btn">Назад</button>
+        </div>
     </div>
 
     <script src="script.js"></script>

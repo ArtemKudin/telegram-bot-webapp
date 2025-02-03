@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const volumeSelection = document.getElementById("volume-selection");
     const confirmation = document.getElementById("confirmation");
     const selectedVolume = document.getElementById("selected-volume");
-
     let currentAction = null;
     let selectedData = null;
 
@@ -44,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function showVolumeSelection(action) {
         const volumesDiv = document.getElementById("volumes");
         volumesDiv.innerHTML = "";
-
         Object.keys(prices[action]).forEach(volume => {
             const button = document.createElement("button");
             button.textContent = `${volume} м³ - ${prices[action][volume]}`;
@@ -54,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             volumesDiv.appendChild(button);
         });
-
         volumeSelection.style.display = "block";
         confirmation.style.display = "none";
     }
@@ -68,8 +65,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Подтвердить заявку
     document.getElementById("confirm-btn").addEventListener("click", () => {
-        Telegram.WebApp.sendData(JSON.stringify(selectedData));
-        Telegram.WebApp.close();
+        if (window.Telegram && window.Telegram.WebApp) {
+            Telegram.WebApp.sendData(JSON.stringify(selectedData));
+            Telegram.WebApp.close();
+        } else {
+            console.error("Telegram WebApp API не доступен.");
+        }
     });
 
     // Вернуться назад

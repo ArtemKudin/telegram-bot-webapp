@@ -16,44 +16,36 @@ dp = Dispatcher()
 # Команда /start
 @dp.message(Command("start"))
 async def send_welcome(message):
-    # Создание кнопок меню
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="📦 Заказать вывоз", callback_data="order_pickup")],
-        [InlineKeyboardButton(text="📋 Мои заказы", callback_data="my_orders")],
-        [InlineKeyboardButton(text="ℹ️ Информация и помощь", callback_data="info_help")]
-    ])
-    await message.answer("Выберите действие:", reply_markup=keyboard)
+    await message.answer("Добро пожаловать! Используйте меню для взаимодействия.")
 
-# Обработчик для кнопки "Заказать вывоз"
-@dp.callback_query(F.data == "order_pickup")
-async def order_pickup(callback_query):
+# Команда /order
+@dp.message(Command("order"))
+async def order_pickup(message):
     # Кнопка для запуска мини-приложения
     web_app_keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="Открыть мини-приложение", web_app=WebAppInfo(url="https://artemkudin.github.io/telegram-bot-webapp/"))]
     ])
-    await bot.send_message(
-        callback_query.from_user.id,
+    await message.answer(
         "Вы можете заказать вывоз мусора через наше мини-приложение:",
         reply_markup=web_app_keyboard
     )
 
-# Обработчик для кнопки "Мои заказы"
-@dp.callback_query(F.data == "my_orders")
-async def my_orders(callback_query):
+# Команда /myorders
+@dp.message(Command("myorders"))
+async def my_orders(message):
     # Проверка наличия заказов (в данном случае просто заглушка)
     orders = []  # Здесь можно добавить логику для получения реальных заказов
     if not orders:
-        await bot.send_message(
-            callback_query.from_user.id,
+        await message.answer(
             "У вас пока нет оплаченных заказов. Вы можете сделать заказ через мини-приложение."
         )
     else:
         # Если есть заказы, отправляем их список
-        await bot.send_message(callback_query.from_user.id, "Ваши заказы:\n" + "\n".join(orders))
+        await message.answer("Ваши заказы:\n" + "\n".join(orders))
 
-# Обработчик для кнопки "Информация и помощь"
-@dp.callback_query(F.data == "info_help")
-async def info_help(callback_query):
+# Команда /info
+@dp.message(Command("info"))
+async def info_help(message):
     # Сообщение с информацией
     message_text = (
         "Уважаемый клиент,\n\n"
@@ -67,8 +59,7 @@ async def info_help(callback_query):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="@ngKANEKI", url="https://t.me/ngKANEKI")]
     ])
-    await bot.send_message(
-        callback_query.from_user.id,
+    await message.answer(
         message_text,
         reply_markup=keyboard
     )
