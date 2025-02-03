@@ -1,7 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Проверяем, что мини-приложение запущено в Telegram
+    if (!window.Telegram || !window.Telegram.WebApp) {
+        alert("Это мини-приложение должно запускаться только через Telegram!");
+        return;
+    }
+
     const serviceInfo = document.getElementById("service-info");
     const serviceTitle = document.getElementById("service-title");
     const volumesDiv = document.getElementById("volumes");
+    const confirmBtn = document.getElementById("confirm-btn");
     let selectedData = null;
 
     // Цены для каждой категории
@@ -36,25 +43,28 @@ document.addEventListener("DOMContentLoaded", () => {
             serviceTitle.textContent = button.textContent;
             showVolumes(action);
             serviceInfo.style.display = "block";
+            confirmBtn.disabled = true; // Отключаем кнопку "Подтвердить" до выбора объёма
         });
     });
 
     // Показать объёмы для выбранной услуги
     function showVolumes(action) {
-        volumesDiv.innerHTML = "";
+        volumesDiv.innerHTML = ""; // Очищаем предыдущие кнопки
         Object.keys(prices[action]).forEach(volume => {
             const button = document.createElement("button");
             button.textContent = `${volume} м³ - ${prices[action][volume]}`;
-            button.addEventListener("click", () => {
+            button.onclick = () => {
                 selectedData = { action, volume, price: prices[action][volume] };
-            });
+                confirmBtn.disabled = false; // Включаем кнопку "Подтвердить"
+                alert(`Выбрано: ${volume} м³ за ${prices[action][volume]}`);
+            };
             volumesDiv.appendChild(button);
         });
     }
 
     // Подтвердить заявку
-    document.getElementById("confirm-btn").addEventListener("click", () => {
-        if (selectedData && window.Telegram && window.Telegram.WebApp) {
+    confirmBtn.addEventListener("click", () => {
+        if (selectedData) {
             Telegram.WebApp.sendData(JSON.stringify(selectedData));
             Telegram.WebApp.close();
         } else {
