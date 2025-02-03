@@ -69,11 +69,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Подтвердить заявку
     confirmBtn.addEventListener("click", () => {
-        if (window.Telegram && window.Telegram.WebApp) {
+        if (selectedData) {
             Telegram.WebApp.sendData(JSON.stringify(selectedData));
             Telegram.WebApp.close();
         } else {
-            alert("Ваша заявка зарегистрирована. Для уточнений обращайтесь к менеджеру @ngKANEKI");
+            alert("Пожалуйста, выберите объём перед подтверждением.");
         }
     });
 

@@ -4,6 +4,7 @@ from aiogram.filters import Command
 from dotenv import load_dotenv
 import os
 import asyncio
+import json
 from database import init_db, save_order, get_user_orders
 
 # Загрузка переменных окружения
@@ -53,13 +54,18 @@ async def my_orders(message):
 # Обработка данных из мини-приложения
 @dp.message(F.web_app_data)
 async def handle_web_app_data(message):
-    data = message.web_app_data.data
     try:
-        data_dict = eval(data)  # Преобразуем строку в словарь
+        # Преобразуем JSON-строку в словарь
+        data_dict = json.loads(message.web_app_data.data)
         user_id = message.from_user.id
         service = data_dict.get("action")
         volume = data_dict.get("volume")
         price = data_dict.get("price")
+
+        # Проверяем, что все данные получены
+        if not all([service, volume, price]):
+            await message.answer("Ошибка: Некорректные данные заявки.")
+            return
 
         # Сохраняем заявку в базу данных
         save_order(user_id, service, volume, price)
@@ -67,7 +73,7 @@ async def handle_web_app_data(message):
         # Отправляем подтверждение пользователю
         await message.answer("Ваша заявка зарегистрирована. Для уточнений обращайтесь к менеджеру @ngKANEKI")
     except Exception as e:
-        await message.answer("Произошла ошибка при обработке заявки. Попробуйте снова.")
+        await message.answer(f"Произошла ошибка при обработке заявки: {str(e)}")
 
 # Запуск бота
 async def main():
