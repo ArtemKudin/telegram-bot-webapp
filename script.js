@@ -84,17 +84,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Подтвердить заявку
-    confirmBtn.addEventListener("click", () => {
+    confirmBtn.addEventListener("click", async () => {
         if (!selectedData) {
             alert("Пожалуйста, выберите объём перед подтверждением.");
             return;
         }
 
         try {
-            console.log("Отправляемые данные:", selectedData);
+            const response = await fetch("https://your-render-url/save-order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: Telegram.WebApp.initDataUnsafe.user.id,
+                    service: selectedData.action,
+                    volume: selectedData.volume,
+                    price: selectedData.price
+                })
+            });
 
-            // Отправляем данные в бот
-            Telegram.WebApp.sendData(JSON.stringify(selectedData));
+            const result = await response.json();
+            if (result.error) {
+                alert(`Ошибка: ${result.error}`);
+            } else {
+                alert("Ваша заявка зарегистрирована!");
+            }
         } catch (error) {
             console.error("Ошибка при отправке данных:", error);
             alert("Произошла ошибка при отправке данных. Попробуйте снова.");
@@ -113,13 +126,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Показать мои заказы
-    myOrdersBtn.addEventListener("click", () => {
+    myOrdersBtn.addEventListener("click", async () => {
         try {
-            // Отправляем запрос на получение заказов
-            Telegram.WebApp.sendData(JSON.stringify({ action: "get_orders" }));
+            const response = await fetch("https://your-render-url/get-orders", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: Telegram.WebApp.initDataUnsafe.user.id })
+            });
+
+            const orders = await response.json();
+            if (orders.error) {
+                ordersList.textContent = `Ошибка: ${orders.error}`;
+            } else if (orders.length === 0) {
+                ordersList.textContent = "У вас пока нет заказов.";
+            } else {
+                ordersList.textContent = orders
+                    .map((order, idx) => `${idx + 1}. Услуга: ${order.service}, Объём: ${order.volume} м³, Стоимость: ${order.price}`)
+                    .join("\n\n");
+            }
+
+            mainPage.style.display = "none";
+            myOrdersPage.style.display = "block";
         } catch (error) {
-            console.error("Ошибка при отправке запроса:", error);
-            alert("Произошла ошибка при загрузке заказов. Попробуйте снова.");
+            console.error("Ошибка при загрузке заказов:", error);
+            ordersList.textContent = "Не удалось загрузить заказы.";
         }
     });
 
