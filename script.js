@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmation = document.getElementById("confirmation");
     const myOrdersPage = document.getElementById("my-orders");
     const ordersList = document.getElementById("orders-list");
-    const serviceTitle = document.getElementById("service-title");
     const volumesDiv = document.getElementById("volumes");
     const selectedVolume = document.getElementById("selected-volume");
     const confirmBtn = document.getElementById("confirm-btn");
@@ -52,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".service-btn").forEach(button => {
         button.addEventListener("click", () => {
             currentAction = button.dataset.action;
-            serviceTitle.textContent = button.textContent;
             showVolumes(currentAction);
             volumeSelection.style.display = "block";
             mainPage.style.display = "none";
@@ -64,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
         volumesDiv.innerHTML = "";
         Object.keys(prices[action]).forEach(volume => {
             const button = document.createElement("button");
+            button.className = "neon-button";
             button.textContent = `${volume} м³ - ${prices[action][volume]}`;
             button.onclick = () => {
                 selectedData = { action, volume, price: prices[action][volume] };
@@ -75,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Показать подтверждение
     function showConfirmation() {
-        selectedVolume.textContent = `Объем: ${selectedData.volume} м³\nСтоимость: ${selectedData.price}`;
+        selectedVolume.textContent = `Ваш заказ: ${selectedData.volume} м³ - ${selectedData.price}`;
         volumeSelection.style.display = "none";
         confirmation.style.display = "block";
     }
@@ -132,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (orders.error) {
                 ordersList.textContent = `Ошибка: ${orders.error}`;
             } else if (orders.length === 0) {
-                ordersList.textContent = "У вас пока нет заказов.";
+                ordersList.textContent = "У вас пока нет подтвержденных заявок.";
             } else {
                 ordersList.textContent = orders
                     .map((order, idx) => `${idx + 1}. Услуга: ${order.service}, Объём: ${order.volume} м³, Стоимость: ${order.price}`)

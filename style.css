@@ -1,39 +1,70 @@
 /* Общий стиль страницы */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    /* Фоновое изображение */
     background-image: url("background.jpg");
-    background-size: cover; /* Растягивает изображение на весь экран */
-    background-position: center; /* Центрирует изображение */
-    background-repeat: no-repeat; /* Запрещает повторение изображения */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
 }
 
 /* Стиль контейнера */
 #app {
     text-align: center;
-    background: rgba(255, 255, 255, 0.8); /* Полупрозрачный фон для контейнера */
+    background: rgba(255, 255, 255, 0.8);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 80%;
     max-width: 400px;
+    position: relative;
 }
 
 /* Стиль кнопок */
 button {
-    background-color: #4caf50;
+    background-color: #00ffcc;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin: 5px;
+    margin: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
 }
+
 button:hover {
-    background-color: #45a049;
-} 
+    background-color: #00eecc;
+}
+
+/* Стиль кнопок в красном неоне */
+.neon-red {
+    background-color: #ff0066;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.neon-red:hover {
+    background-color: #ff3399;
+}
+
+/* Стиль заголовков */
+h1, h2 {
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}

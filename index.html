@@ -4,38 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
         <h1>Telegram Mini App</h1>
-        <div id="menu">
-            <button onclick="showServices()">Выберите услугу</button>
-            <button onclick="showOrders()">Мои заказы</button>
-        </div>
-
-        <div id="services" class="hidden">
+        
+        <!-- Главная страница -->
+        <div id="main-page" class="page">
             <h2>Выберите услугу:</h2>
-            <button onclick="selectService('Вывоз мусора')">Вывоз мусора</button>
-            <button onclick="selectService('Продажа контейнеров')">Продажа контейнеров</button>
-            <button onclick="selectService('Аренда контейнеров')">Аренда контейнеров</button>
-            <button onclick="goBack()">Назад</button>
+            <button class="neon-button service-btn" data-action="service_waste">Вывоз мусора</button>
+            <button class="neon-button service-btn" data-action="service_sale">Продажа контейнеров</button>
+            <button class="neon-button service-btn" data-action="service_rent">Аренда контейнеров</button>
+            <button class="neon-button service-btn" id="my-orders-btn">Мои заказы</button>
         </div>
 
-        <div id="confirm-order" class="hidden">
+        <!-- Страница выбора объема -->
+        <div id="volume-selection" class="page" style="display: none;">
+            <h2>Выберите объём:</h2>
+            <div id="volumes"></div>
+            <button class="neon-red" id="back-to-main-btn">Назад</button>
+        </div>
+
+        <!-- Страница подтверждения заказа -->
+        <div id="confirmation" class="page" style="display: none;">
             <h2>Подтвердите заказ:</h2>
-            <p id="order-details"></p>
-            <button onclick="confirmOrder()">Подтвердить</button>
-            <button onclick="goBack()">Назад</button>
+            <p id="selected-volume"></p>
+            <button class="neon-red" id="confirm-btn">Подтвердить</button>
+            <button class="neon-red" id="back-to-volumes-btn">Назад</button>
         </div>
 
-        <div id="orders" class="hidden">
+        <!-- Страница моих заказов -->
+        <div id="my-orders" class="page" style="display: none;">
             <h2>Мои заказы:</h2>
-            <ul id="orders-list">Загрузка...</ul>
-            <button onclick="goBack()">Назад</button>
+            <p id="orders-list">Загрузка...</p>
+            <button class="neon-red" id="back-to-main-from-orders-btn">Назад</button>
         </div>
-    </div>
 
-    <script src="/static/script.js"></script>
+        <script src="script.js"></script>
+    </div>
 </body>
 </html>
