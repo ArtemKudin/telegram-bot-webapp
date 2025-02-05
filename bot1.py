@@ -64,7 +64,7 @@ async def handle_web_app_data(message):
         # Преобразуем JSON-строку в словарь
         data_dict = json.loads(message.web_app_data.data)
         user_id = message.from_user.id
-
+        logging.info(f"Received data: {data_dict}")
         # Если запрос на получение заказов
         if data_dict.get("action") == "get_orders":
             orders = get_user_orders(user_id)
@@ -78,24 +78,21 @@ async def handle_web_app_data(message):
             ]
             await message.answer(json.dumps(orders_list))
             return
-
         # Если запрос на сохранение новой заявки
         service = data_dict.get("action")
         volume = data_dict.get("volume")
         price = data_dict.get("price")
-
+        logging.info(f"Service: {service}, Volume: {volume}, Price: {price}")
         # Проверяем, что все данные получены
         if not all([service, volume, price]):
             await message.answer("Ошибка: Некорректные данные заявки.")
             return
-
         # Сохраняем заявку в базу данных
         save_order(user_id, service, volume, price)
-
         # Отправляем подтверждение пользователю
         await message.answer("Ваша заявка зарегистрирована. Для оплаты перейдите по ссылке:")
     except Exception as e:
-        print(f"Ошибка при обработке данных: {str(e)}")
+        logging.error(f"Ошибка при обработке данных: {str(e)}")
         await message.answer("Произошла ошибка при обработке заявки. Попробуйте снова.")
 
 # Запуск бота
