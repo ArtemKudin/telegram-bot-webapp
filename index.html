@@ -1,45 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div id="app">
-        <!-- Главная страница -->
-        <div id="main-page">
-            <h1>Выберите услугу:</h1>
-            <button class="service-btn" data-action="service_waste">Вывоз мусора</button>
-            <button class="service-btn" data-action="service_sale">Продажа контейнеров</button>
-            <button class="service-btn" data-action="service_rent">Аренда контейнеров</button>
-            <button id="my-orders-btn">Мои заказы</button>
+        <h1>Telegram Mini App</h1>
+        <div id="menu">
+            <button onclick="showServices()">Выберите услугу</button>
+            <button onclick="showOrders()">Мои заказы</button>
         </div>
 
-        <!-- Выбор объёма -->
-        <div id="volume-selection" style="display: none;">
-            <h2 id="service-title"></h2>
-            <div id="volumes"></div>
-            <button id="back-to-main-btn">Назад</button>
+        <div id="services" class="hidden">
+            <h2>Выберите услугу:</h2>
+            <button onclick="selectService('Вывоз мусора')">Вывоз мусора</button>
+            <button onclick="selectService('Продажа контейнеров')">Продажа контейнеров</button>
+            <button onclick="selectService('Аренда контейнеров')">Аренда контейнеров</button>
+            <button onclick="goBack()">Назад</button>
         </div>
 
-        <!-- Подтверждение -->
-        <div id="confirmation" style="display: none;">
+        <div id="confirm-order" class="hidden">
             <h2>Подтвердите заказ:</h2>
-            <pre id="selected-volume"></pre>
-            <button id="confirm-btn">Подтвердить</button>
-            <button id="back-to-volumes-btn">Назад</button>
+            <p id="order-details"></p>
+            <button onclick="confirmOrder()">Подтвердить</button>
+            <button onclick="goBack()">Назад</button>
         </div>
 
-        <!-- Мои заказы -->
-        <div id="my-orders" style="display: none;">
+        <div id="orders" class="hidden">
             <h2>Мои заказы:</h2>
-            <pre id="orders-list">Загрузка...</pre>
-            <button id="back-to-main-from-orders-btn">Назад</button>
+            <ul id="orders-list">Загрузка...</ul>
+            <button onclick="goBack()">Назад</button>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="/static/script.js"></script>
 </body>
 </html>

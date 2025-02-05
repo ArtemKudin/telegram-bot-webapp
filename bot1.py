@@ -51,12 +51,10 @@ async def my_orders(message):
     if not orders:
         await message.answer("У вас пока нет зарегистрированных заявок.")
         return
-
     response = "Ваши заявки:\n\n"
     for idx, (service, volume, price, payment_link) in enumerate(orders, start=1):
         response += f"{idx}. Услуга: {service}, Объём: {volume} м³, Стоимость: {price}\n"
         response += f"Для оплаты перейдите по ссылке: {payment_link}\n\n"
-
     await message.answer(response)
 
 # Обработка данных из мини-приложения
@@ -73,7 +71,6 @@ async def handle_web_app_data(message):
             if not orders:
                 await message.answer("У вас пока нет заказов.")
                 return
-
             # Отправляем заказы в формате JSON
             orders_list = [
                 {"service": service, "volume": volume, "price": price}
